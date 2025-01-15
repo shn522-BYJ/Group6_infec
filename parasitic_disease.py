@@ -1,40 +1,65 @@
-
-
-# Load datasets
 import pandas as pd
-articles_data = pd.read_csv("data/articles.schistosomiasis.csv")
-# Added encoding='latin-1' to handle the different file encoding
-authors_data = pd.read_csv("data/authors.schistosomiasis.csv")
-paper_counts = pd.read_csv("data/paper_counts.csv")
+import numpy as np
+import re
 
-articles_data
+articles_path = 'data/articles.schistosomiasis.csv'
+authors_path = 'data/authors.schistosomiasis.csv'
 
-# Check for missing values
-print(articles_data.isnull().sum())
+articles = pd.read_csv(articles_path)
+authors = pd.read_csv(authors_path)
 
-# Define keywords for the biological target
-keywords = ['parasitic disease', 'schistosomiasis']
+def normalize_text(text):
+    """Normalize text by removing brackets, special characters, and trimming whitespace."""
+    if pd.isnull(text):  # Handle missing data
+        return ""
+    # Remove brackets, special characters, and strip whitespace
+    return re.sub(r'[\[\](){}]', '', text).strip().lower()
 
-# Filter papers where title or abstract mentions the biological target
-filtered_articles = articles_data[
-    articles_data['Title'].str.contains('|'.join(keywords), case=False, na=False) |
-    articles_data['Abstract'].str.contains('|'.join(keywords), case=False, na=False)
-]
-filtered_articles
+def contains_keywords(text, keywords):
+    """Check if any keyword is present in the given text as a whole word."""
+    text_normalized = normalize_text(text)
+    # Use regex to ensure keywords are matched as whole words
+    return any(re.search(rf'\b{re.escape(keyword)}\b', text_normalized) for keyword in keywords)
 
-authors_data
+def filter_articles(articles_df, keywords, sample_size=5):
+    """
+    Filter articles based on keywords in titles and abstracts.
+    Randomly sample non-relevant articles for manual review.
 
-# Check for missing values
-print(authors_data.isnull().sum())
+    Args:
+        articles_df (pd.DataFrame): DataFrame containing article metadata.
+        keywords (list): List of keywords to check for relevance.
+        sample_size (int): Number of non-relevant articles to sample.
 
-# Filter authors based on selected PMIDs
-relevant_authors = authors_data[authors_data['PMID'].isin(filtered_articles['PMID'])]
-relevant_authors.to_csv('filtered_authors.csv', index=False)
+    Returns:
+        relevant_articles (pd.DataFrame): Articles marked as relevant.
+        non_relevant_sample (pd.DataFrame): Random sample of non-relevant articles.
+        discarded_articles (pd.DataFrame): All non-relevant articles in original format.
+    """
+    # Apply keyword detection to Title and Abstract fields
+    articles_df['Relevant'] = articles_df['Title'].apply(lambda x: contains_keywords(x, keywords)) | \
+                              articles_df['Abstract'].apply(lambda x: contains_keywords(x, keywords))
 
-filtered_authors = pd.read_csv("/content/filtered_authors.csv")
-filtered_authors
+    # Separate relevant and non-relevant articles
+    relevant_articles = articles_df[articles_df['Relevant']]
+    non_relevant_articles = articles_df[~articles_df['Relevant']]
 
-paper_counts
+    # Randomly sample non-relevant articles for manual review
+    non_relevant_sample = non_relevant_articles.sample(n=min(sample_size, len(non_relevant_articles)), random_state=42)
 
-# Check for missing values
-print(paper_counts.isnull().sum())
+    return relevant_articles, non_relevant_sample, non_relevant_articles
+
+# Define relevant keywords
+keywords = ["schistosomiasis", "schistosoma", "parasitic disease", "schistosomal",
+    "japonicum", "oncomelania", "cercariae", "molluscicide", "bilharzia", "schistosome", "antischistosomal", "schistosomes", "molluscicidal", "snail control"]
+
+# Filter articles and sample non-relevant ones
+relevant_articles, non_relevant_sample, discarded_articles = filter_articles(articles, keywords, sample_size=5)
+
+# Save the relevant articles and discarded articles
+relevant_articles.to_csv('data/relevant_articles.csv', index=False)
+discarded_articles.to_csv('data/discarded_articles.csv', index=False)
+
+# Print sample of non-relevant articles for manual review
+print("Sample of non-relevant articles for manual review:")
+print(non_relevant_sample[['PMID', 'Abstract']])
