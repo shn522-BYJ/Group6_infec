@@ -44,7 +44,7 @@ top_keywords_df = pd.DataFrame(top_keywords, columns=["Keyword", "Count"])
 print(top_keywords_df)
 
 # Save the results to a CSV file for further review
-top_keywords_df.to_csv('top_keywords_in_first_round.csv', index=False)
+top_keywords_df.to_csv('data/top_keywords_in_first_round.csv', index=False)
 
 # Define the main keywords related to schistosomiasis
 keywords = ['schistosomiasis','parasitic','parasite','japonicum','schistosoma','praziquantel','schistosome','mansoni','haematobium','helminth','trematodes']
@@ -68,9 +68,9 @@ print(authors_data.isnull().sum())
 
 # Filter authors based on selected PMIDs
 relevant_authors = authors_data[authors_data['PMID'].isin(filtered_articles['PMID'])]
-relevant_authors.to_csv('filtered_authors.csv', index=False)
+relevant_authors.to_csv('data/filtered_authors.csv', index=False)
 
-filtered_authors = pd.read_csv("filtered_authors.csv")
+filtered_authors = pd.read_csv("data/filtered_authors.csv")
 filtered_authors
 
 # Check for missing values
