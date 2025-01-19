@@ -70,7 +70,7 @@ print(authors_data.isnull().sum())
 relevant_authors = authors_data[authors_data['PMID'].isin(filtered_articles['PMID'])]
 relevant_authors.to_csv('filtered_authors.csv', index=False)
 
-filtered_authors = pd.read_csv("/content/filtered_authors.csv")
+filtered_authors = pd.read_csv("filtered_authors.csv")
 filtered_authors
 
 # Check for missing values
