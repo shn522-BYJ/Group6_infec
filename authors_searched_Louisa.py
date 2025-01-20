@@ -44,7 +44,7 @@ top_keywords_df = pd.DataFrame(top_keywords, columns=["Keyword", "Count"])
 print(top_keywords_df)
 
 # Save the results to a CSV file for further review
-top_keywords_df.to_csv('data/top_keywords_in_first_round.csv', index=False)
+# top_keywords_df.to_csv('data/top_keywords_in_first_round.csv', index=False)
 
 # Define the main keywords related to schistosomiasis
 keywords = ['schistosomiasis','parasitic','parasite','japonicum','schistosoma','praziquantel','schistosome','mansoni','haematobium','helminth','trematodes']
