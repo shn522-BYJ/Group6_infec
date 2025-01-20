@@ -56,7 +56,7 @@ filtered_articles = articles_data[
 ]
 
 # Save or explore the filtered articles
-filtered_articles.to_csv('data/filtered_articles_simple.csv', index=False)
+filtered_articles.to_csv('data/filtered_articles_simple.csv',encoding='latin-1',index=False)
 print(f"Number of articles mentioning the target: {filtered_articles.shape[0]}")
 
 filtered_articles
