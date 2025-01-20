@@ -10,9 +10,9 @@ Original file is located at
 
 # Load datasets
 import pandas as pd
-articles_data = pd.read_csv("data/articles.schistosomiasis.csv")
+articles_data = pd.read_csv("data/articles.schistosomiasis.csv", encoding='latin-1')
 # Added encoding='latin-1' to handle the different file encoding
-authors_data = pd.read_csv("data/authors.schistosomiasis.csv")
+authors_data = pd.read_csv("data/authors.schistosomiasis.csv", encoding='latin-1')
 
 
 articles_data
