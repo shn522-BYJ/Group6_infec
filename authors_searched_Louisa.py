@@ -87,6 +87,16 @@ key_researchers = (
     .reset_index(name='ContributionCount')
 )
 
-key_researchers = key_researchers.sort_values(by='ContributionCount', ascending=False)
-key_researchers.to_csv('key_researchers.csv', index=False)
-print(key_researchers.head(10))
+key_researchers = key_researchers.sort_values(by='ContributionCount', ascending=False).head(30)
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+# Create a new column combining 'AuthorForename' and 'AuthorLastname'
+key_researchers['FullName'] = key_researchers['AuthorForename'] + ' ' + key_researchers['AuthorLastname']
+# Use the new 'FullName' column for the x-axis
+plt.bar(key_researchers['FullName'], key_researchers['ContributionCount'])
+plt.xticks(rotation=45, ha='right')
+plt.title('Top 30 Active Researchers in the field of Schistosomiasis')
+plt.xlabel('Name of the authors')
+plt.ylabel('Publication Count')
+plt.show()
