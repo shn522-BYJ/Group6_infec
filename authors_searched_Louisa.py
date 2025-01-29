@@ -87,7 +87,7 @@ key_researchers = (
     .reset_index(name='ContributionCount')
 )
 
-key_researchers = key_researchers.sort_values(by='ContributionCount', ascending=False).head(30)
+key_researchers = key_researchers.sort_values(by='ContributionCount', ascending=False).head(10)
 
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 6))
@@ -96,7 +96,7 @@ key_researchers['FullName'] = key_researchers['AuthorForename'] + ' ' + key_rese
 # Use the new 'FullName' column for the x-axis
 plt.bar(key_researchers['FullName'], key_researchers['ContributionCount'])
 plt.xticks(rotation=45, ha='right')
-plt.title('Top 30 Active Researchers in the field of Schistosomiasis')
+plt.title('Top 10 Active Researchers in the field of Schistosomiasis')
 plt.xlabel('Name of the authors')
 plt.ylabel('Publication Count')
 plt.show()
